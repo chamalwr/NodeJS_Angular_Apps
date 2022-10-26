@@ -32,7 +32,7 @@ router.get('/book/:id', async function(req, res) {
     if(book){
         return res.status(200).json(book)
     }
-    return res.status(404).json({status: 404, error: `Book not found on id ${book}`});
+    return res.status(404).json({status: 404, error: `Book not found on id ${bookId}`});
 });
 
 router.get('/authors', async function(req, res) {
@@ -127,13 +127,6 @@ router.put('/book/:id', async function(req, res) {
     const bookId = req.params.id;
     const bookPayload = req.body;
 
-    const isAuthorExists = await AuthorModel.exists({ _id : bookPayload.author })
-    .catch((error) => {
-        console.log(`Failed to update selected book on id ${bookId} because fetching
-        author data for the given author Id cased an error. Error Message ${error.message}`);
-        return res.status(500).json({ status : 500, error : error.message });
-    });
-
     const isBookExists = await BookModel.exists({ _id : bookId })
     .catch((error) => {
         console.log(`Failed to update selected book on id ${bookId} failed to retrive book data
@@ -142,6 +135,12 @@ router.put('/book/:id', async function(req, res) {
     });
 
     if(isBookExists){
+        const isAuthorExists = await AuthorModel.exists({ _id : bookPayload.author })
+        .catch((error) => {
+            console.log(`Failed to update selected book on id ${bookId} because fetching
+            author data for the given author Id cased an error. Error Message ${error.message}`);
+            return res.status(500).json({ status : 500, error : error.message });
+        });    
         if(isAuthorExists){
             const updatedBookDetail = await BookModel.findByIdAndUpdate(bookId, bookPayload, { new: true }).populate('author')
             .catch((error) => {
@@ -151,9 +150,9 @@ router.put('/book/:id', async function(req, res) {
             });
             return res.status(200).json(updatedBookDetail);
         }
-        return res.status(404).json({status: 404, error: `Author not found on id ${authorId}`});
+        return res.status(404).json({status: 404, error: `Author not found on id ${bookPayload.author}`});
     }
-    return res.status(404).json({status: 404, error: `Book not found on id ${authorId}`});
+    return res.status(404).json({status: 404, error: `Book not found on id ${bookId}`});
     
 });
 
