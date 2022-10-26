@@ -1,12 +1,12 @@
 import { Schema, model } from 'mongoose';
-import { AuthorSchema } from './author-schema'
+import { AuthorSchema } from './author-schema.js'
 
 const BookSchema = new Schema({
     name:String,
     isbn:String,
-    author: AuthorSchema,
+    author: { type: Schema.Types.ObjectId, ref: 'author' }
 });
 
 const bookModel = model('book', BookSchema, 'Books');
 
-export { BookSchema, bookModel }
+export { BookSchema as BookSchema, bookModel as BookModel }
