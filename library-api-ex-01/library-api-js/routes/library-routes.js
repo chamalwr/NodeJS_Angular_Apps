@@ -4,7 +4,23 @@ import { BookModel } from '../model/book-schema.js'
 var router = Router();
 
 router.get('/books', async function(req, res) {
-    //TODO
+    const page = Number(req.query.page);
+    const take = Number(req.query.take);
+    const totalBooks = await BookModel.count();
+
+    const books = await BookModel.find()
+                    .limit(take * 1)
+                    .skip((page - 1) * take)
+                    .populate('author')
+                    .exec()
+                    .catch((error) => {
+                        console.log(`Error while getting all book data with Error Message ${error.message}`);
+                        return res.status(500).json({ status : 500, error: `${error.message }`});
+                    });
+    if(books){
+        return res.status(200).json({books, totalPages: Math.ceil(totalBooks / take), currentPage: page });
+    }
+    return res.status(200).json({books, totalPages: 0, currentPage: page });
 });
 
 router.get('/book/:id', async function(req, res) {
@@ -20,7 +36,23 @@ router.get('/book/:id', async function(req, res) {
 });
 
 router.get('/authors', async function(req, res) {
-    //TODO
+    const page = Number(req.query.page);
+    const take = Number(req.query.take);
+    const totalAuthors = await AuthorModel.count();
+
+    const authors = await AuthorModel.find()
+                      .limit(take * 1)
+                      .skip((page - 1) * take)
+                      .exec()
+                      .catch((error) => {
+                        console.log(`Error while getting all authors data with Error Message ${error.message}`);
+                        return res.status(500).json({ status : 500, error: `${error.message }`});
+                      });
+
+    if(authors){
+        return res.status(200).json({authors, totalPages: Math.ceil(totalAuthors / take), currentPage: page });
+    }
+    return res.status(200).json({authors, totalPages: 0, currentPage: page });
 });
 
 router.get('/author/:id', async function(req, res) {
