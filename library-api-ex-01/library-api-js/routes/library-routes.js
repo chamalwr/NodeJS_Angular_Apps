@@ -40,19 +40,28 @@ router.get('/authors', async function(req, res) {
     const take = Number(req.query.take);
     const totalAuthors = await AuthorModel.count();
 
-    const authors = await AuthorModel.find()
-                      .limit(take * 1)
-                      .skip((page - 1) * take)
-                      .exec()
-                      .catch((error) => {
-                        console.log(`Error while getting all authors data with Error Message ${error.message}`);
-                        return res.status(500).json({ status : 500, error: `${error.message }`});
-                      });
+    if(page && take) {
+        const authors = await AuthorModel.find()
+        .limit(take * 1)
+        .skip((page - 1) * take)
+        .exec()
+        .catch((error) => {
+          console.log(`Error while getting all authors data with Error Message ${error.message}`);
+          return res.status(500).json({ status : 500, error: `${error.message }`});
+        });
 
-    if(authors){
-        return res.status(200).json({authors, totalPages: Math.ceil(totalAuthors / take), currentPage: page });
+        if(authors){
+            return res.status(200).json({authors, totalPages: Math.ceil(totalAuthors / take), currentPage: page });
+        }
+        return res.status(200).json({authors, totalPages: 0, currentPage: page });
+    }else {
+        const authors = await AuthorModel.find().exec();
+        if(authors){
+            return res.status(200).json({authors, totalAuthors: totalAuthors });
+        }
+        return res.status(200).json({authors, totalAuthors: totalAuthors });
     }
-    return res.status(200).json({authors, totalPages: 0, currentPage: page });
+  
 });
 
 router.get('/author/:id', async function(req, res) {
