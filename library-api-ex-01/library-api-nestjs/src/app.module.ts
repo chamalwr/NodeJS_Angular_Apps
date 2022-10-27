@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { LoggerModule } from 'nestjs-pino';
 import { AuthorsModule } from './authors/authors.module';
+import { BooksModule } from './books/books.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { AuthorsModule } from './authors/authors.module';
       }),
     }),
     AuthorsModule,
+    BooksModule,
   ],
   controllers: [],
   providers: [],
