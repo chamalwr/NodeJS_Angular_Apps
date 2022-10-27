@@ -1,6 +1,7 @@
 import express from 'express';
 import * as dotenv from 'dotenv';
-import { libraryRoutes } from './routes/library-routes.js'
+import { AuthorRoutes } from './routes/author-routes.js'
+import { BookRoutes } from './routes/book-routes.js';
 import { mongoose } from 'mongoose'
 import cors from 'cors'
 
@@ -26,7 +27,8 @@ app.use(cors())
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());   
 //Registering routes
-app.use('/', libraryRoutes);
+app.use('/', AuthorRoutes);
+app.use('/', BookRoutes);
 
 // Initializing server
 app.listen(port, function() {
