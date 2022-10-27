@@ -1,0 +1,100 @@
+<div>
+    <button type="button" class="btn btn-primary" (click)="openAddNewAuthorModal(addNewAuthorModal)">Add New Author</button>
+</div>
+
+<div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let author of authors, index as i">
+                <th scope="row">{{  i + 1 }}</th>
+                <td> {{ author.firstName }}</td>
+                <td> {{ author.lastName }}</td>
+                <td>
+                    <button type="button" class="btn btn-warning" (click)="openEditAuthorModal(updateAuthorModal, author._id)">Edit</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="d-flex justify-content-between p-2">
+        <ngb-pagination
+            [collectionSize]="collectionSize"
+            [(page)]="page"
+            [pageSize]="pageSize"
+            (pageChange)="refreshAuthors()"
+        >
+        </ngb-pagination>
+    
+        <select class="form-select" style="width: auto" 
+            [(ngModel)]="pageSize" (ngModelChange)="refreshAuthors()">
+                <option [ngValue]="6"> 6 items per page</option>
+                <option [ngValue]="10">10 items per page</option>
+                <option [ngValue]="40">40 items per page</option>
+        </select>
+    </div>
+</div>
+
+<ng-template #updateAuthorModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Update Author Details</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="editAuthorForm">
+          <div class="mb-3">
+            <label for="firstName">First Name : </label>
+            <div class="input-group">
+              <input id="firstName" formControlName="firstName" class="form-control" placeholder="" name="First Name">
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="lastName">Last Name : </label>
+            <div class="input-group">
+              <input id="lastName" formControlName="lastName" class="form-control" placeholder="" name="Last Name">
+            </div>
+          </div>
+    
+          <div class="modal-footer">
+              <button type="reset" class="btn btn-outline-dark">Clear</button>
+              <button type="submit" [disabled]="editAuthorForm.invalid" class="btn btn-outline-dark" (click)="modal.close(editAuthorForm)">Update</button>
+          </div>
+       </form>
+      </div>
+</ng-template>
+
+<ng-template #addNewAuthorModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Add New Author</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="createAuthorForm">
+          <div class="mb-3">
+            <label for="firstName">First Name : </label>
+            <div class="input-group">
+              <input id="firstName" formControlName="firstName" class="form-control" placeholder="" name="First Name">
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="lastName">Last Name : </label>
+            <div class="input-group">
+              <input id="lastName" formControlName="lastName" class="form-control" placeholder="" name="Last Name">
+            </div>
+          </div>
+    
+          <div class="modal-footer">
+              <button type="reset" class="btn btn-outline-dark">Clear</button>
+              <button type="submit" [disabled]="createAuthorForm.invalid" class="btn btn-outline-dark" (click)="modal.close(createAuthorForm)">Save</button>
+          </div>
+       </form>
+      </div>
+</ng-template>
