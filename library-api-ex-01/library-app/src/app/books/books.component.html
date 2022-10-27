@@ -1,5 +1,5 @@
 <div>
-    <button type="button" class="btn btn-primary">Add New Book</button>
+    <button type="button" class="btn btn-primary" (click)="openCreateBookModal(createBookModal)">Add New Book</button>
 </div>
 
 <div>
@@ -17,7 +17,7 @@
                 <td> {{ book.name }}</td>
                 <td>
                     <button type="button" class="btn btn-info" (click)="openDetailBookView(viewBookDetailModal, book)">View</button>
-                    <button type="button" class="btn btn-warning">Edit</button>
+                    <button type="button" class="btn btn-warning" (click)="openUpdateBookDataModal(updateBookModal, book._id)" >Edit</button>
                 </td>
             </tr>
         </tbody>
@@ -43,15 +43,102 @@
 
 <ng-template #viewBookDetailModal let-modal>
     <div class="modal-header">
-        <h4 class="modal-title">{{ selectedBook?.name + " by "  +selectedBook?.author?.firstName + " " + selectedBook?.author?.lastName }}</h4>
+        <h4 class="modal-title">{{ selectedBook.name + " by "  +selectedBook.author.firstName + " " + selectedBook.author.lastName }}</h4>
         <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
     </div>
     <div class="modal-body">
-        <p>Book Name : {{ selectedBook?.name }}</p>
-        <p>ISBN      : {{ selectedBook?.isbn }} </p>
-        <p>Author    : {{ selectedBook?.author?.firstName + " " + selectedBook?.author?.lastName }} </p>
+        <p>Book Name : {{ selectedBook.name }}</p>
+        <p>ISBN      : {{ selectedBook.isbn }} </p>
+        <p>Author    : {{ selectedBook.author.firstName + " " + selectedBook.author.lastName }} </p>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-outline-dark" (click)="modal.dismiss()">Close</button>
     </div>
+</ng-template>
+
+
+<ng-template #updateBookModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Update Book Details</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="editBookForm">
+          <div class="mb-3">
+            <label for="name">Name : </label>
+            <div class="input-group">
+              <input id="name" formControlName="name" class="form-control" placeholder="" name="Book Name">
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="isbn">ISBN : </label>
+            <div class="input-group">
+              <input type = "isbn" id="isbn" class="form-control" formControlName="isbn" placeholder="" name="ISBN">
+            </div>
+          </div>
+    
+          <div class="mb-3">
+            <label for="author">Author : </label>
+            <div class="input-group">
+              <div class="col">
+                <input id="author" type="text" class="form-control"
+                  [ngbTypeahead]="search"
+                  [inputFormatter]="formatter"
+                  [resultFormatter]="formatter"
+                  [editable]='false' 
+                  formControlName="author"/>
+              </div>
+            </div>
+          </div>
+    
+          <div class="modal-footer">
+              <button type="reset" class="btn btn-outline-dark">Clear</button>
+              <button type="submit" [disabled]="editBookForm.invalid" class="btn btn-outline-dark" (click)="modal.close(editBookForm)">Update</button>
+          </div>
+       </form>
+      </div>
+</ng-template>
+
+<ng-template #createBookModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Create New Book</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="createBookForm">
+          <div class="mb-3">
+            <label for="name">Name : </label>
+            <div class="input-group">
+              <input id="name" formControlName="name" class="form-control" placeholder="" name="Book Name">
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="isbn">ISBN : </label>
+            <div class="input-group">
+              <input type = "isbn" id="isbn" class="form-control" formControlName="isbn" placeholder="" name="ISBN">
+            </div>
+          </div>
+    
+          <div class="mb-3">
+            <label for="author">Author : </label>
+            <div class="input-group">
+              <div class="col">
+                <input id="author" type="text" class="form-control"
+                  [ngbTypeahead]="search"
+                  [inputFormatter]="formatter"
+                  [resultFormatter]="formatter"
+                  [editable]='false' 
+                  formControlName="author"/>
+              </div>
+            </div>
+          </div>
+    
+          <div class="modal-footer">
+              <button type="reset" class="btn btn-outline-dark">Clear</button>
+              <button type="submit" [disabled]="createBookForm.invalid" class="btn btn-outline-dark" (click)="modal.close(createBookForm)">Save</button>
+          </div>
+       </form>
+      </div>
 </ng-template>
