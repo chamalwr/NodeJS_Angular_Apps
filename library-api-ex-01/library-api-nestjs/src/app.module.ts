@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { LoggerModule } from 'nestjs-pino';
+import { AuthorsModule } from './authors/authors.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { LoggerModule } from 'nestjs-pino';
         uri: process.env.MONGODB_ATLAS_URL,
       }),
     }),
+    AuthorsModule,
   ],
   controllers: [],
   providers: [],
