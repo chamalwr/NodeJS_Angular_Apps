@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  libraryApiUrlLocal: 'http://localhost:3000/',
-  libraryApiUrl: '',
+  libraryApiUrlLocal: 'http://localhost:3000',
+  libraryApiUrl: 'http://localhost:3000',
 };
 
 /*
