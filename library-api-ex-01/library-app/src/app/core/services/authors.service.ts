@@ -29,6 +29,6 @@ export class AuthorsService {
   }
 
   updateAuthor(id: string, updateAuthorDto: UpdateAuthor){
-    return this.httpClient.put(`${this.apiSerberBaseUrl}/book/${id}`, updateAuthorDto);
+    return this.httpClient.put(`${this.apiSerberBaseUrl}/author/${id}`, updateAuthorDto);
   }
 }
