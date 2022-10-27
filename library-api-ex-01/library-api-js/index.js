@@ -2,6 +2,7 @@ import express from 'express';
 import * as dotenv from 'dotenv';
 import { libraryRoutes } from './routes/library-routes.js'
 import { mongoose } from 'mongoose'
+import cors from 'cors'
 
 dotenv.config();
 const app = express();
@@ -21,6 +22,7 @@ mongoose.connect(mongoConnString, {
 });
 
 //Setting middleware
+app.use(cors())
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());   
 //Registering routes
