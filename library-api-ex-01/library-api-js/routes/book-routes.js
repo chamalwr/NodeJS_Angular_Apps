@@ -1,7 +1,10 @@
 import { Router } from 'express';
 import { AuthorModel } from '../model/author-schema.js';
 import { BookModel } from '../model/book-schema.js'
+import { pino } from 'pino'
+
 var router = Router();
+const logger = pino();
 
 router.get('/books', async function(req, res) {
     const page = Number(req.query.page);
@@ -14,7 +17,7 @@ router.get('/books', async function(req, res) {
                     .populate('author')
                     .exec()
                     .catch((error) => {
-                        console.log(`Error while getting all book data with Error Message ${error.message}`);
+                        logger.error(`Error while getting all book data with Error Message ${error.message}`);
                         return res.status(500).json({ statusCode : 500, errorMessage: `${error.message}, error: 'Internal Server Error' `});
                     });
     if(books){
@@ -26,7 +29,7 @@ router.get('/books', async function(req, res) {
 router.get('/book/:id', async function(req, res) {
     const bookId = req.params.id;
     const book = await BookModel.findById(bookId).populate('author').catch((error) => {
-        console.log(`Error occured while getting Book using author id ${bookId}. Error message: ${error.message}`);
+        logger.error(`Error occured while getting Book using author id ${bookId}. Error message: ${error.message}`);
         return res.status(500).json({ statusCode : 500, errorMessage: `${error.message}, error: 'Internal Server Error' `});
     });
     if(book){
@@ -40,7 +43,7 @@ router.post('/book', async function(req, res) {
     const authorId = req.body.author;
 
     const isAuthorExists = await AuthorModel.exists({ _id : authorId }).catch((error) => {
-        console.log(`Unable to create new Book since failed to retrive author data for author ID ${authorId}
+        logger.error(`Unable to create new Book since failed to retrive author data for author ID ${authorId}
         with Error Message ${error.message}`);
         return res.status(500).json({ statusCode : 500, errorMessage: `${error.message}, error: 'Internal Server Error' `});
     });
@@ -48,7 +51,7 @@ router.post('/book', async function(req, res) {
     if(isAuthorExists){
         const savedBook = await BookModel.create(bookPayload)
             .catch((error) => {
-                console.log(`Error while creating a new book with payload ${JSON.stringify(bookPayload)}. Error Message ${error.message}`);
+                logger.error(`Error while creating a new book with payload ${JSON.stringify(bookPayload)}. Error Message ${error.message}`);
                 return res.status(500).json({ statusCode : 500, errorMessage: `${error.message}, error: 'Internal Server Error' `});
         });
         return res.status(201).json(savedBook);
@@ -65,7 +68,7 @@ router.put('/book/:id', async function(req, res) {
 
     const isBookExists = await BookModel.exists({ _id : bookId })
     .catch((error) => {
-        console.log(`Failed to update selected book on id ${bookId} failed to retrive book data
+        logger.error(`Failed to update selected book on id ${bookId} failed to retrive book data
         Error Message ${error.message}`);
         return res.status(500).json({ statusCode : 500, errorMessage: `${error.message}, error: 'Internal Server Error' `});
     });
@@ -73,14 +76,14 @@ router.put('/book/:id', async function(req, res) {
     if(isBookExists){
         const isAuthorExists = await AuthorModel.exists({ _id : bookPayload.author })
         .catch((error) => {
-            console.log(`Failed to update selected book on id ${bookId} because fetching
+            logger.error(`Failed to update selected book on id ${bookId} because fetching
             author data for the given author Id cased an error. Error Message ${error.message}`);
             return res.status(500).json({ statusCode : 500, errorMessage: `${error.message}, error: 'Internal Server Error' `});
         });    
         if(isAuthorExists){
             const updatedBookDetail = await BookModel.findByIdAndUpdate(bookId, bookPayload, { new: true }).populate('author')
             .catch((error) => {
-                console.log(`Failed to update book details for Book ID ${bookId} with payload ${JSON.stringify(bookPayload)}
+                logger.error(`Failed to update book details for Book ID ${bookId} with payload ${JSON.stringify(bookPayload)}
                             returned Error Message ${error.message}`);
                             return res.status(500).json({ statusCode : 500, errorMessage: `${error.message}, error: 'Internal Server Error' `});
             });
