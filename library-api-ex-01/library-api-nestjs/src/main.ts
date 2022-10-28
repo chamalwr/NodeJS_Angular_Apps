@@ -11,6 +11,9 @@ async function bootstrap() {
   //Setting pino logger as application level default logger
   app.useLogger(app.get(Logger));
 
+  //Enabling CORS
+  app.enableCors();
+
   const logger = new PinoLogger({});
   logger.setContext('NestBootsrap');
 
