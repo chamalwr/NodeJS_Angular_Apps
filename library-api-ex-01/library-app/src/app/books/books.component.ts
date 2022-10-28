@@ -29,9 +29,11 @@ type AuthorType = {  _id: string, firstName: string, lastName: string };
   styleUrls: ['./books.component.scss']
 })
 export class BooksComponent implements OnInit {
-  page = 1;
-	pageSize = 10;
-	collectionSize = 0;
+  pageSize = 6;
+  collectionSize = 0;
+  currentPage: number = 1;
+  totalPages: number = 0;
+
 	books: Book[] = [];
   authors: Author[] = [];
   loading: boolean = false;
@@ -63,7 +65,7 @@ export class BooksComponent implements OnInit {
   };
 
   ngOnInit(): void {
-    this.getAllBooks(this.page, this.pageSize);
+    this.getAllBooks(this.currentPage, this.pageSize);
     this.getAuthors();
   }
 
@@ -74,14 +76,40 @@ export class BooksComponent implements OnInit {
     private readonly bookService: BooksService,
     private readonly authorService: AuthorsService,
   ) {
-		this.refreshBooks();
 	}
 
-	refreshBooks() {
-		this.books = this.books.map((book, i) => ({ id: i + 1, ...book })).slice(
-			(this.page - 1) * this.pageSize,
-			(this.page - 1) * this.pageSize + this.pageSize,
-		);
+	refreshBooks(event: any, changedPageSize?: boolean) {
+    if(changedPageSize) {
+      this.currentPage = 1;
+      this.pageSize = event;
+      this.bookService.getAllBooks(this.currentPage, this.pageSize).subscribe({
+        next: (data: any) => {
+          if(data.loading){
+            this.loading = true;
+          }
+          this.loading = false;
+          this.books = data.books;
+          this.currentPage = data.currentPage;
+          this.collectionSize = Math.ceil(data.totalPages * this.pageSize);
+          this.totalPages = data.totalPages;
+          this.currentPage = data.currentPage;
+        },
+        error: (error: any) => {
+          this.toastr.error(`Failed to get books details : ${error.message}`, 'Internal Server Error');
+        }
+      });
+    }else {
+      this.bookService.getAllBooks(event, this.pageSize).subscribe({
+        next: (data: any) => {
+          this.books = data.books;
+          this.currentPage = data.currentPage;
+        },
+        error: (error: any) => {
+          this.toastr.error(`Failed to get books details : ${error.message}`, 'Internal Server Error');
+        }
+      });
+    }
+   
 	}
 
   openDetailBookView(content: any, bookDetail?: Book){
@@ -153,7 +181,9 @@ export class BooksComponent implements OnInit {
         }
         this.loading = false;
         this.books = data.books;
-        this.collectionSize = this.books.length;
+        this.collectionSize = Math.ceil(data.totalPages * this.pageSize);
+        this.totalPages = data.totalPages;
+        this.currentPage = data.currentPage;
       },
       error: (error: any) => {
         this.loading = false;
@@ -167,7 +197,7 @@ export class BooksComponent implements OnInit {
   }
 
   getAuthors(){
-    this.authorService.getAuthors(1, 100).subscribe({
+    this.authorService.getAuthors().subscribe({
       next: (data: any) => {
         if(data.loading){
           this.loading = true;

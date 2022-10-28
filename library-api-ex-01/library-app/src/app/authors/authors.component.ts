@@ -19,9 +19,11 @@ interface Author {
   styleUrls: ['./authors.component.scss']
 })
 export class AuthorsComponent implements OnInit {
-  page = 1;
-	pageSize = 10;
-	collectionSize = 0;
+  pageSize = 6;
+  collectionSize = 0;
+  currentPage: number = 1;
+  totalPages: number = 0;
+
   authors: Author[] = [];
   loading: boolean = false;
   
@@ -43,17 +45,20 @@ export class AuthorsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.getAllAuthors();
+    this.getAllAuthors(this.currentPage, this.pageSize);
   }
 
-  getAllAuthors(){
-    this.authorService.getAuthors().subscribe({
+  getAllAuthors(page: number, take: number){
+    this.authorService.getAuthors(page, take).subscribe({
       next: (data: any) => {
         if(data.loading){
           this.loading = true;
         }
         this.loading = false;
         this.authors = data.authors;
+        this.collectionSize = Math.ceil(data.totalPages * this.pageSize);
+        this.totalPages = data.totalPages;
+        this.currentPage = data.currentPage;
       },
       error: (error: any) => {
         this.toastr.error(`Failed to get authors data! Error ${error.message}`, `Internal Server Error`);
@@ -88,7 +93,7 @@ export class AuthorsComponent implements OnInit {
           },
           error: (error: any) => {
             this.loading = false;
-            this.toastr.warning(`${error.error.errorMessage}`, `Failed to Update Author Details`);
+            this.toastr.warning(`${error.error.message}`, `Failed to Update Author Details`);
           }
         })
       }else {
@@ -123,7 +128,7 @@ export class AuthorsComponent implements OnInit {
           },
           error: (error: any) => {
             this.loading = false;
-            this.toastr.warning(`${error.error.errorMessage}`, `Failed to Create new Author`);
+            this.toastr.warning(`${error.error.message}`, `Failed to Create new Author`);
           }
         })
       }else {
@@ -140,10 +145,36 @@ export class AuthorsComponent implements OnInit {
     });
   }
 
-  refreshAuthors() {
-		this.authors = this.authors.map((author, i) => ({ id: i + 1, ...author })).slice(
-			(this.page - 1) * this.pageSize,
-			(this.page - 1) * this.pageSize + this.pageSize,
-		);
+  refreshAuthors(event: any, changedPageSize?: boolean) {
+		if(changedPageSize){
+      this.currentPage = 1;
+      this.pageSize = event;
+      this.authorService.getAuthors(this.currentPage, event).subscribe({
+        next: (data: any) => {
+          if(data.loading){
+            this.loading = true;
+          }
+          this.loading = false;
+          this.authors = data.authors;
+          this.currentPage = data.currentPage;
+          this.collectionSize = Math.ceil(data.totalPages * this.pageSize);
+          this.totalPages = data.totalPages;
+          this.currentPage = data.currentPage;
+        },
+        error: (error: any) => {
+          this.toastr.error(`Failed to get authors details : ${error.message}`, 'Internal Server Error');
+        }
+      })
+    }else{
+      this.authorService.getAuthors(event, this.pageSize).subscribe({
+        next: (data: any) => {
+          this.authors = data.authors;
+          this.currentPage = data.currentPage;
+        },
+        error: (error: any) => {
+          this.toastr.error(`Failed to get authors details : ${error.message}`, 'Internal Server Error');
+        }
+      });
+    }
 	}
 }

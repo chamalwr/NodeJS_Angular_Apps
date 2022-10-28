@@ -25,15 +25,15 @@
     
     <div class="d-flex justify-content-between p-2">
         <ngb-pagination
-            [collectionSize]="collectionSize"
-            [(page)]="page"
-            [pageSize]="pageSize"
-            (pageChange)="refreshAuthors()"
+        [collectionSize]="collectionSize"
+        [(page)]="currentPage"
+        [pageSize]="pageSize"
+        (pageChange)="refreshAuthors($event)"
         >
         </ngb-pagination>
     
         <select class="form-select" style="width: auto" 
-            [(ngModel)]="pageSize" (ngModelChange)="refreshAuthors()">
+            [(ngModel)]="pageSize" (ngModelChange)="refreshAuthors($event, true)">
                 <option [ngValue]="6"> 6 items per page</option>
                 <option [ngValue]="10">10 items per page</option>
                 <option [ngValue]="40">40 items per page</option>
