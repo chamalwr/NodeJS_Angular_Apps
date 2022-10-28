@@ -14,7 +14,7 @@ router.get('/authors', async function(req, res) {
         .exec()
         .catch((error) => {
           console.log(`Error while getting all authors data with Error Message ${error.message}`);
-          return res.status(500).json({ status : 500, error: `${error.message }`});
+          return res.status(500).json({ statusCode : 500, errorMessage: `${error.message}, error: 'Internal Server Error'`});
         });
 
         if(authors){
@@ -35,12 +35,12 @@ router.get('/author/:id', async function(req, res) {
     const authorId = req.params.id;
     const author = await AuthorModel.findById(authorId).catch((error) => {
         console.log(`Error occured while getting author using author id ${authorId}. Error message: ${error.message}`);
-        return res.status(500).json({ status: 500, error: `${error.message}` });
+        return res.status(500).json({ statusCode: 500, errorMessage: `${error.message}`, error: 'Internal Server Error' });
     });
     if(author){
         return res.status(200).json(author)
     }
-    return res.status(404).json({status: 404, error: `Author not found on id ${authorId}`});
+    return res.status(404).json({statusCode: 404, errorMessage: `Author not found on id ${authorId}`, error: 'Resource Not Found'});
 });
 
 router.post('/author', async function(req, res) {
@@ -48,7 +48,7 @@ router.post('/author', async function(req, res) {
     const savedAuthor = await AuthorModel.create(authorPayload)
     .catch((error) => {
         console.log(`Error while creating a new author with payload ${JSON.stringify(authorPayload)}. Error Message ${error.message}`);
-        return res.status(500).json({ status: 500, error: `${error.message}` });
+        return res.status(500).json({ statusCode: 500, errorMessage: `${error.message}`, error: 'Internal Server Error' });
     });
     return res.status(201).json(savedAuthor);
 });
@@ -61,18 +61,18 @@ router.put('/author/:id', async function(req, res) {
     .catch((error) => {
         console.log(`Failed to update because error while getting author data for author ID ${authorId}
         with Error Message ${error.message}`);
-        return res.status(500).json({ status: 500, error: `${error.message}` });
+        return res.status(500).json({ statusCode: 500, errorMessage: `${error.message}`, error: 'Internal Server Error' });
     });
     if(isAuthorExists){
         const updatedUser = await AuthorModel.findByIdAndUpdate(authorId, authorPayload, { new: true })
         .catch((error) => {
             console.log(`Failed to update Authorailed to update Author with  with Author Id ${authorId} and 
                         Payload ${JSON.stringify(authorPayload)} with Error : ${error.message}`);
-            return res.status(500).json({ status: 500, error: `${error.message}` });
+            return res.status(500).json({ statusCode: 500, errorMessage: `${error.message}`, error: 'Internal Server Error' });
         })
         return res.status(200).json(updatedUser);
     }
-    return res.status(404).json({ status: 404, error: `Author is not found on given ID of  ${authorId}`});
+    return res.status(404).json({ statusCode: 404, errorMessage: `Author is not found on given ID of  ${authorId}`, error: 'Resource Not Found'});
 });
 
 export { router as AuthorRoutes }
