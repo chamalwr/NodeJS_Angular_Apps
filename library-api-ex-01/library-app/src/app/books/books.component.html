@@ -1,8 +1,8 @@
 <div>
-    <button type="button" class="btn btn-primary" (click)="openCreateBookModal(createBookModal)">Add New Book</button>
+    <button type="button" class="btn btn-primary add-button-position" (click)="openCreateBookModal(createBookModal)">Add New Book</button>
 </div>
 
-<div>
+<div class="table-position">
     <table class="table table-striped">
         <thead>
             <tr>
@@ -16,8 +16,8 @@
                 <th scope="row">{{  i + 1 }}</th>
                 <td> {{ book.name }}</td>
                 <td>
-                    <button type="button" class="btn btn-info" (click)="openDetailBookView(viewBookDetailModal, book)">View</button>
-                    <button type="button" class="btn btn-warning" (click)="openUpdateBookDataModal(updateBookModal, book._id)" >Edit</button>
+                    <button type="button" class="btn btn-info button-spacing" (click)="openDetailBookView(viewBookDetailModal, book)">View</button>
+                    <button type="button" class="btn btn-warning button-spacing" (click)="openUpdateBookDataModal(updateBookModal, book._id)" >Edit</button>
                 </td>
             </tr>
         </tbody>

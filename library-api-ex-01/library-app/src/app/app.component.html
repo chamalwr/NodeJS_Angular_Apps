@@ -1,12 +1,13 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#">Simple Library</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <a class="navbar-brand navbar-main-brand">Simple Library</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+                (click)="navbarCollapsed = !navbarCollapsed" [attr.aria-expanded]="!navbarCollapsed" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
-  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-    <div class="navbar-nav">
-      <a class="nav-item nav-link" href="/books"> Books </a>
-      <a class="nav-item nav-link" href="/authors"> Authors </a>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup" [ngbCollapse]="navbarCollapsed" id="navbarSupportedContent">
+    <div class="navbar-nav navbar-item">
+      <a class="nav-item navbar-menu-item nav-link" href="/books"> Books </a>
+      <a class="nav-item navbar-menu-item nav-link" href="/authors"> Authors </a>
     </div>
   </div>
 </nav>
