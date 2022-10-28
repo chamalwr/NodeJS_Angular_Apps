@@ -36,7 +36,7 @@ export class AuthorsService {
         return {
           authors,
           totalPages: Math.ceil(totalAuthors / take),
-          currentPage: page,
+          currentPage: Number(page),
         };
       }
       return undefined;
