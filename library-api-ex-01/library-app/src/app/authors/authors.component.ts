@@ -88,7 +88,7 @@ export class AuthorsComponent implements OnInit {
           },
           error: (error: any) => {
             this.loading = false;
-            this.toastr.warning(`${error.error.error}`, `Failed to Update Author Details`);
+            this.toastr.warning(`${error.error.errorMessage}`, `Failed to Update Author Details`);
           }
         })
       }else {
@@ -123,7 +123,7 @@ export class AuthorsComponent implements OnInit {
           },
           error: (error: any) => {
             this.loading = false;
-            this.toastr.warning(`${error.error.error}`, `Failed to Create new Author`);
+            this.toastr.warning(`${error.error.errorMessage}`, `Failed to Create new Author`);
           }
         })
       }else {
