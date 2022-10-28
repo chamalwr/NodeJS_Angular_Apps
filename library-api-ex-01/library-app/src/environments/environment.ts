@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   libraryApiUrlLocal: 'http://localhost:3000',
-  libraryApiUrl: 'http://localhost:3000',
+  libraryApiUrl: 'http://141.144.229.132',
 };
 
 /*
